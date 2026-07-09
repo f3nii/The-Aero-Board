@@ -1,0 +1,1304 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&family=Ubuntu:wght@300;400;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Ubuntu', 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0a6e8a 0%, #1aadce 30%, #3dd9c0 60%, #7ae8b8 100%);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .app-shell {
+    min-height: 100vh;
+    background: 
+      radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.18) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(120,230,255,0.15) 0%, transparent 50%),
+      linear-gradient(135deg, #0e7fa0 0%, #17b8d8 35%, #32d4b8 65%, #6ae4a8 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 0 32px 0;
+  }
+
+  /* HEADER */
+  .header {
+    width: 100%;
+    background: rgba(255,255,255,0.22);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1.5px solid rgba(255,255,255,0.45);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 4px 24px rgba(10,100,140,0.18), inset 0 1px 0 rgba(255,255,255,0.55);
+  }
+
+  .header-logo {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(180,240,255,0.7) 100%);
+    border-radius: 12px;
+    border: 1.5px solid rgba(255,255,255,0.8);
+    box-shadow: 0 2px 10px rgba(10,130,180,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+
+  .header-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 1px 8px rgba(10,100,140,0.4), 0 0 20px rgba(255,255,255,0.3);
+    letter-spacing: 0.5px;
+  }
+
+  .header-subtitle {
+    font-size: 12px;
+    color: rgba(255,255,255,0.8);
+    font-weight: 300;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  /* NAV TABS */
+  .nav {
+    display: flex;
+    gap: 8px;
+    margin: 24px 0 0 0;
+    padding: 6px;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    border: 1.5px solid rgba(255,255,255,0.4);
+    box-shadow: 0 4px 20px rgba(10,100,140,0.15), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+
+  .tab {
+    padding: 9px 22px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    transition: all 0.25s ease;
+    letter-spacing: 0.3px;
+    font-family: inherit;
+  }
+
+  .tab:hover {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+  }
+
+  .tab.active {
+    background: linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(200,245,255,0.88) 100%);
+    color: #0a7a9e;
+    box-shadow: 0 2px 12px rgba(10,100,160,0.2), inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+
+  /* PANELS */
+  .panel {
+    display: none;
+    width: 100%;
+    max-width: 700px;
+    padding: 0 16px;
+    margin-top: 24px;
+  }
+
+  .panel.active { display: block; }
+
+  /* GLASS CARD */
+  .glass-card {
+    background: rgba(255,255,255,0.22);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    box-shadow: 0 8px 32px rgba(10,80,130,0.18), inset 0 1px 0 rgba(255,255,255,0.65), inset 0 -1px 0 rgba(255,255,255,0.15);
+    padding: 28px;
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 100%);
+    pointer-events: none;
+    border-radius: 24px 24px 0 0;
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.95);
+    text-shadow: 0 1px 6px rgba(10,80,130,0.35);
+    margin-bottom: 18px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+
+  /* ===================== RNG PANEL ===================== */
+  #fishCanvas {
+    width: 100%;
+    height: 200px;
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(10,120,180,0.45) 0%, rgba(5,80,130,0.55) 100%);
+    border: 1px solid rgba(255,255,255,0.35);
+    display: block;
+    margin-bottom: 20px;
+  }
+
+  .rng-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+
+  .aero-input {
+    flex: 1;
+    min-width: 80px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.28);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .aero-input::placeholder { color: rgba(255,255,255,0.55); }
+  .aero-input:focus { border-color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.36); }
+
+  .aero-btn {
+    padding: 10px 22px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(255,255,255,0.55);
+    background: linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(200,240,255,0.35) 100%);
+    color: #0a6080;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    box-shadow: 0 2px 10px rgba(10,100,160,0.15), inset 0 1px 0 rgba(255,255,255,0.8);
+  }
+
+  .aero-btn:hover {
+    background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(200,240,255,0.55) 100%);
+    box-shadow: 0 4px 16px rgba(10,100,160,0.22), inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+
+  .aero-btn:active { transform: scale(0.97); }
+
+  .rng-result {
+    text-align: center;
+    font-size: 56px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 0 30px rgba(100,230,255,0.6), 0 2px 12px rgba(10,80,140,0.4);
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: -1px;
+    transition: all 0.3s;
+  }
+
+  .rng-history {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  .rng-badge {
+    padding: 5px 14px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.22);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.9);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* ===================== SCREENSAVER ===================== */
+  #ssCanvas {
+    width: 100%;
+    height: 320px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(255,255,255,0.4);
+    display: block;
+    cursor: pointer;
+  }
+
+  .ss-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .ss-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    font-weight: 600;
+  }
+
+  .aero-select {
+    padding: 9px 14px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.28);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    cursor: pointer;
+  }
+
+  /* ===================== MP3 / TONE PLAYER ===================== */
+  .mp3-display {
+    text-align: center;
+    padding: 18px;
+    background: rgba(10,80,140,0.25);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.25);
+    margin-bottom: 18px;
+  }
+
+  .mp3-track-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 0 20px rgba(100,220,255,0.5);
+    margin-bottom: 4px;
+  }
+
+  .mp3-artist {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .mp3-viz {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 3px;
+    height: 48px;
+    margin: 14px 0 0 0;
+  }
+
+  .mp3-bar {
+    width: 6px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, rgba(100,240,255,0.9) 0%, rgba(30,180,220,0.7) 100%);
+    transition: height 0.1s;
+    min-height: 4px;
+  }
+
+  .mp3-progress-wrap {
+    background: rgba(255,255,255,0.18);
+    border-radius: 6px;
+    height: 6px;
+    margin: 16px 0 12px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .mp3-progress-fill {
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, rgba(100,230,255,0.9), rgba(255,255,255,0.8));
+    transition: width 0.5s linear;
+    width: 0%;
+  }
+
+  .mp3-time-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 14px;
+  }
+
+  .mp3-controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+
+  .mp3-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.55);
+    background: linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(180,230,255,0.35) 100%);
+    color: #0a6080;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 10px rgba(10,100,160,0.15), inset 0 1px 0 rgba(255,255,255,0.8);
+  }
+
+  .mp3-btn:hover { transform: scale(1.08); box-shadow: 0 4px 16px rgba(10,100,160,0.22); }
+  .mp3-btn.play-btn { width: 56px; height: 56px; font-size: 22px; }
+
+  .mp3-playlist {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 160px;
+    overflow-y: auto;
+  }
+
+  .mp3-track {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 13px;
+    color: rgba(255,255,255,0.9);
+  }
+
+  .mp3-track:hover { background: rgba(255,255,255,0.25); }
+  .mp3-track.playing { background: rgba(255,255,255,0.32); border-color: rgba(255,255,255,0.6); font-weight: 700; color: #fff; }
+
+  .mp3-track-num {
+    width: 20px;
+    color: rgba(255,255,255,0.45);
+    font-size: 11px;
+    text-align: center;
+  }
+
+  /* ===================== CLOCK ===================== */
+  .clock-display {
+    text-align: center;
+    padding: 24px;
+  }
+
+  .clock-time {
+    font-size: 64px;
+    font-weight: 300;
+    color: #fff;
+    text-shadow: 0 0 40px rgba(120,240,255,0.55), 0 2px 16px rgba(10,80,140,0.4);
+    letter-spacing: -2px;
+    margin-bottom: 6px;
+    font-family: 'Ubuntu', sans-serif;
+  }
+
+  .clock-date {
+    font-size: 16px;
+    color: rgba(255,255,255,0.75);
+    font-weight: 300;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+  }
+
+  .clock-analog {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  #clockCanvas {
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.45);
+    box-shadow: 0 0 30px rgba(100,220,255,0.3), inset 0 0 20px rgba(10,60,120,0.2);
+  }
+
+  /* ===================== DICE ===================== */
+  .dice-area {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .die {
+    width: 80px; height: 80px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.75) 0%, rgba(200,240,255,0.65) 100%);
+    border-radius: 18px;
+    border: 2px solid rgba(255,255,255,0.7);
+    box-shadow: 0 6px 24px rgba(10,80,140,0.22), inset 0 1px 0 rgba(255,255,255,0.9);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: #0a5a80;
+  }
+
+  .die:hover { transform: translateY(-4px) rotate(8deg); }
+  .die.rolling { animation: dieRoll 0.5s ease-in-out; }
+
+  @keyframes dieRoll {
+    0% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(90deg) scale(1.1); }
+    50% { transform: rotate(180deg) scale(0.95); }
+    75% { transform: rotate(270deg) scale(1.05); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+
+  .dice-type-btns {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .dice-type-btn {
+    padding: 7px 16px;
+    border-radius: 10px;
+    border: 1.5px solid rgba(255,255,255,0.45);
+    background: rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.9);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+
+  .dice-type-btn:hover { background: rgba(255,255,255,0.35); }
+  .dice-type-btn.selected { background: rgba(255,255,255,0.55); color: #0a6080; border-color: rgba(255,255,255,0.8); }
+
+  .dice-result {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.95);
+    text-shadow: 0 0 20px rgba(100,230,255,0.4);
+  }
+
+  /* ===================== COIN FLIP ===================== */
+  .coin-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .coin {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px;
+    border: 3px solid rgba(255,255,255,0.55);
+    box-shadow: 0 8px 32px rgba(10,80,140,0.28), inset 0 2px 0 rgba(255,255,255,0.7);
+    transition: all 0.3s;
+    user-select: none;
+  }
+
+  .coin.heads {
+    background: linear-gradient(135deg, rgba(255,230,100,0.75) 0%, rgba(255,190,50,0.65) 100%);
+  }
+
+  .coin.tails {
+    background: linear-gradient(135deg, rgba(200,220,240,0.75) 0%, rgba(160,190,220,0.65) 100%);
+  }
+
+  .coin.flipping { animation: coinFlip 0.6s ease-in-out; }
+
+  @keyframes coinFlip {
+    0% { transform: rotateY(0deg) scale(1); }
+    50% { transform: rotateY(90deg) scale(0.7); }
+    100% { transform: rotateY(0deg) scale(1); }
+  }
+
+  .coin-result {
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 0 20px rgba(100,230,255,0.5);
+    min-height: 36px;
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.35); border-radius: 10px; }
+
+</style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- HEADER -->
+  <div class="header" style="width:100%;">
+    <div class="header-logo">🌊</div>
+    <div>
+      <div class="header-title">The Aero Board</div>
+      <div class="header-subtitle">Your glassy digital companion</div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav">
+    <button class="tab active" onclick="switchTab('rng')">🐠 Random</button>
+    <button class="tab" onclick="switchTab('clock')">🕐 Clock</button>
+    <button class="tab" onclick="switchTab('screensaver')">🌊 Saver</button>
+    <button class="tab" onclick="switchTab('music')">🎵 Tones</button>
+    <button class="tab" onclick="switchTab('dice')">🎲 Dice</button>
+    <button class="tab" onclick="switchTab('coin')">🪙 Coin</button>
+  </div>
+
+  <!-- ===== RNG PANEL ===== -->
+  <div id="panel-rng" class="panel active">
+    <div class="glass-card">
+      <div class="card-title">🐠 Tropical Fish Number Generator</div>
+      <canvas id="fishCanvas" width="668" height="200"></canvas>
+      <div class="rng-controls">
+        <input class="aero-input" id="rng-min" type="number" placeholder="Min (1)" value="1">
+        <input class="aero-input" id="rng-max" type="number" placeholder="Max (100)" value="100">
+        <button class="aero-btn" onclick="generateNumber()">Generate ✨</button>
+      </div>
+      <div class="rng-result" id="rng-result">—</div>
+      <div class="rng-history" id="rng-history"></div>
+    </div>
+  </div>
+
+  <!-- ===== CLOCK PANEL ===== -->
+  <div id="panel-clock" class="panel">
+    <div class="glass-card">
+      <div class="card-title">🕐 Aero Clock</div>
+      <div class="clock-display">
+        <div class="clock-time" id="clock-digital">00:00:00</div>
+        <div class="clock-date" id="clock-date">Loading...</div>
+        <div class="clock-analog">
+          <canvas id="clockCanvas" width="180" height="180"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREENSAVER PANEL ===== -->
+  <div id="panel-screensaver" class="panel">
+    <div class="glass-card">
+      <div class="card-title">🌊 Aero Screensaver</div>
+      <canvas id="ssCanvas" width="668" height="320"></canvas>
+      <div class="ss-controls">
+        <span class="ss-label">Mode:</span>
+        <select class="aero-select" id="ss-mode" onchange="setSaverMode()">
+          <option value="bubbles">✨ Bubbles</option>
+          <option value="waves">🌊 Waves</option>
+          <option value="stars">⭐ Stars</option>
+          <option value="orbs">🔵 Orbs</option>
+        </select>
+        <button class="aero-btn" onclick="toggleSaver()">⏸ Pause</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MUSIC / TONE PANEL ===== -->
+  <div id="panel-music" class="panel">
+    <div class="glass-card">
+      <div class="card-title">🎵 Aero Tone Player</div>
+      <div class="mp3-display">
+        <div class="mp3-track-name" id="mp3-name">Select a tone to play</div>
+        <div class="mp3-artist" id="mp3-artist">Aero Board Synth</div>
+        <div class="mp3-viz" id="mp3-viz"></div>
+      </div>
+      <div class="mp3-progress-wrap" onclick="seekTone(event)">
+        <div class="mp3-progress-fill" id="mp3-progress"></div>
+      </div>
+      <div class="mp3-time-row">
+        <span id="mp3-curr">0:00</span>
+        <span id="mp3-dur">0:00</span>
+      </div>
+      <div class="mp3-controls">
+        <button class="mp3-btn" onclick="prevTrack()" title="Previous">⏮</button>
+        <button class="mp3-btn play-btn" id="mp3-play-btn" onclick="togglePlay()" title="Play">▶</button>
+        <button class="mp3-btn" onclick="nextTrack()" title="Next">⏭</button>
+        <button class="mp3-btn" onclick="toggleLoop()" id="loop-btn" title="Loop">🔁</button>
+      </div>
+      <div class="mp3-playlist" id="mp3-playlist"></div>
+    </div>
+  </div>
+
+  <!-- ===== DICE PANEL ===== -->
+  <div id="panel-dice" class="panel">
+    <div class="glass-card">
+      <div class="card-title">🎲 Aero Dice Roller</div>
+      <div class="dice-type-btns">
+        <button class="dice-type-btn selected" onclick="selectDiceType(4, this)">D4</button>
+        <button class="dice-type-btn selected" onclick="selectDiceType(6, this)">D6</button>
+        <button class="dice-type-btn" onclick="selectDiceType(8, this)">D8</button>
+        <button class="dice-type-btn" onclick="selectDiceType(10, this)">D10</button>
+        <button class="dice-type-btn" onclick="selectDiceType(12, this)">D12</button>
+        <button class="dice-type-btn" onclick="selectDiceType(20, this)">D20</button>
+        <button class="dice-type-btn" onclick="selectDiceType(100, this)">D100</button>
+      </div>
+      <div class="dice-area" id="dice-area">
+        <div class="die" onclick="rollAllDice()">⚄</div>
+        <div class="die" onclick="rollAllDice()">⚅</div>
+      </div>
+      <button class="aero-btn" style="width:100%;margin-bottom:14px" onclick="rollAllDice()">🎲 Roll All Dice!</button>
+      <div class="dice-result" id="dice-result">Click dice or Roll All!</div>
+    </div>
+  </div>
+
+  <!-- ===== COIN PANEL ===== -->
+  <div id="panel-coin" class="panel">
+    <div class="glass-card">
+      <div class="card-title">🪙 Coin Flip</div>
+      <div class="coin-area">
+        <div class="coin heads" id="coin" onclick="flipCoin()">🪙</div>
+        <div class="coin-result" id="coin-result">Tap to flip!</div>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <div style="font-size:13px;color:rgba(255,255,255,0.7)">Heads: <span id="coin-heads">0</span></div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.7)">Tails: <span id="coin-tails">0</span></div>
+        </div>
+        <button class="aero-btn" onclick="flipCoin()">Flip Coin 🪙</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+//  TAB SWITCHING
+// ============================================================
+let activeTab = 'rng';
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  event.target.classList.add('active');
+  activeTab = name;
+  if (name === 'screensaver') startSaver();
+  if (name === 'clock') drawClock();
+}
+
+// ============================================================
+//  FISH TANK RNG
+// ============================================================
+const fishCanvas = document.getElementById('fishCanvas');
+const fishCtx = fishCanvas.getContext('2d');
+fishCanvas.width = fishCanvas.offsetWidth || 668;
+
+const FISH_TYPES = [
+  { body: '#FF7043', fin: '#FF5722', tail: '#E64A19', eye: '#fff' },
+  { body: '#FFD54F', fin: '#FFC107', tail: '#FF8F00', eye: '#fff' },
+  { body: '#4FC3F7', fin: '#29B6F6', tail: '#0288D1', eye: '#fff' },
+  { body: '#A5D6A7', fin: '#81C784', tail: '#388E3C', eye: '#fff' },
+  { body: '#CE93D8', fin: '#BA68C8', tail: '#7B1FA2', eye: '#fff' },
+];
+
+let fishes = FISH_TYPES.map((type, i) => ({
+  x: 80 + i * 120,
+  y: 60 + Math.random() * 80,
+  vx: (Math.random() * 1.2 + 0.5) * (Math.random() < 0.5 ? 1 : -1),
+  vy: (Math.random() * 0.4 - 0.2),
+  size: 28 + Math.random() * 14,
+  type,
+  tailPhase: Math.random() * Math.PI * 2,
+  finPhase: Math.random() * Math.PI * 2,
+  excited: 0,
+}));
+
+let bubbles = Array.from({length: 12}, () => ({
+  x: Math.random() * (fishCanvas.width - 40) + 20,
+  y: 200 + Math.random() * 40,
+  r: 2 + Math.random() * 5,
+  vy: 0.3 + Math.random() * 0.6,
+  alpha: 0.3 + Math.random() * 0.4
+}));
+
+function drawFish(ctx, fish) {
+  const { x, y, size, type, tailPhase, finPhase, vx, excited } = fish;
+  const facing = vx > 0 ? 1 : -1;
+  const tailWag = Math.sin(tailPhase) * (excited > 0 ? 0.6 : 0.25);
+  const w = fishCanvas.width || 668;
+
+  ctx.save();
+  ctx.translate(x, y);
+  if (facing < 0) ctx.scale(-1, 1);
+  ctx.globalAlpha = 0.82;
+
+  // tail
+  ctx.save();
+  ctx.rotate(tailWag);
+  ctx.beginPath();
+  ctx.moveTo(-size * 0.55, 0);
+  ctx.lineTo(-size * 1.1, -size * 0.45);
+  ctx.lineTo(-size * 1.05, size * 0.45);
+  ctx.closePath();
+  ctx.fillStyle = type.tail;
+  ctx.fill();
+  ctx.restore();
+
+  // body
+  ctx.beginPath();
+  ctx.ellipse(0, 0, size * 0.6, size * 0.35, 0, 0, Math.PI * 2);
+  ctx.fillStyle = type.body;
+  ctx.fill();
+
+  // dorsal fin
+  ctx.save();
+  ctx.rotate(Math.sin(finPhase) * 0.12);
+  ctx.beginPath();
+  ctx.moveTo(0, -size * 0.35);
+  ctx.quadraticCurveTo(size * 0.2, -size * 0.65, size * 0.35, -size * 0.35);
+  ctx.closePath();
+  ctx.fillStyle = type.fin;
+  ctx.globalAlpha = 0.75;
+  ctx.fill();
+  ctx.restore();
+
+  // eye
+  ctx.beginPath();
+  ctx.arc(size * 0.35, -size * 0.07, size * 0.1, 0, Math.PI * 2);
+  ctx.fillStyle = '#222';
+  ctx.globalAlpha = 1;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(size * 0.37, -size * 0.09, size * 0.04, 0, Math.PI * 2);
+  ctx.fillStyle = '#fff';
+  ctx.fill();
+
+  // excited sparkle
+  if (excited > 0) {
+    ctx.globalAlpha = excited / 30;
+    ctx.font = `${size * 0.5}px serif`;
+    ctx.fillStyle = '#FFD700';
+    ctx.fillText('✨', size * 0.5, -size * 0.6);
+  }
+
+  ctx.restore();
+}
+
+function fishLoop() {
+  const W = fishCanvas.width || 668, H = 200;
+  fishCtx.clearRect(0, 0, W, H);
+
+  // water bg
+  const wg = fishCtx.createLinearGradient(0, 0, 0, H);
+  wg.addColorStop(0, 'rgba(30,140,200,0.55)');
+  wg.addColorStop(1, 'rgba(5,80,140,0.7)');
+  fishCtx.fillStyle = wg;
+  fishCtx.fillRect(0, 0, W, H);
+
+  // subtle caustic ripple lines
+  fishCtx.save();
+  fishCtx.globalAlpha = 0.07;
+  fishCtx.strokeStyle = '#fff';
+  fishCtx.lineWidth = 1;
+  for (let i = 0; i < 5; i++) {
+    fishCtx.beginPath();
+    const y0 = 30 + i * 35 + Math.sin(Date.now()/2000 + i) * 6;
+    fishCtx.moveTo(0, y0);
+    fishCtx.bezierCurveTo(W/3, y0 - 8, 2*W/3, y0 + 8, W, y0);
+    fishCtx.stroke();
+  }
+  fishCtx.restore();
+
+  // bubbles
+  bubbles.forEach(b => {
+    fishCtx.beginPath();
+    fishCtx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+    fishCtx.strokeStyle = `rgba(200,240,255,${b.alpha})`;
+    fishCtx.lineWidth = 0.8;
+    fishCtx.stroke();
+    fishCtx.beginPath();
+    fishCtx.arc(b.x - b.r * 0.3, b.y - b.r * 0.3, b.r * 0.3, 0, Math.PI * 2);
+    fishCtx.fillStyle = `rgba(255,255,255,${b.alpha * 0.7})`;
+    fishCtx.fill();
+    b.y -= b.vy;
+    b.x += Math.sin(Date.now()/800 + b.y) * 0.15;
+    if (b.y < -5) { b.y = H + 5; b.x = Math.random() * (W - 40) + 20; }
+  });
+
+  // fish
+  fishes.forEach(fish => {
+    fish.tailPhase += 0.12 + (fish.excited > 0 ? 0.12 : 0);
+    fish.finPhase += 0.08;
+    fish.x += fish.vx + (fish.excited > 0 ? fish.vx * 0.5 : 0);
+    fish.y += fish.vy + Math.sin(fish.tailPhase * 0.4) * 0.18;
+    if (fish.excited > 0) fish.excited--;
+
+    // bounce off walls
+    const margin = fish.size;
+    if (fish.x < margin) { fish.vx = Math.abs(fish.vx); }
+    if (fish.x > W - margin) { fish.vx = -Math.abs(fish.vx); }
+    if (fish.y < margin) { fish.vy = Math.abs(fish.vy) * 0.5; }
+    if (fish.y > H - margin) { fish.vy = -Math.abs(fish.vy) * 0.5; }
+    fish.vy *= 0.99;
+
+    drawFish(fishCtx, fish);
+  });
+
+  // sand / floor decoration
+  fishCtx.save();
+  fishCtx.globalAlpha = 0.3;
+  fishCtx.fillStyle = '#c8a96e';
+  fishCtx.fillRect(0, H - 12, W, 12);
+  for (let i = 0; i < 8; i++) {
+    fishCtx.beginPath();
+    fishCtx.arc(40 + i * 80, H - 14, 5 + i % 3 * 3, 0, Math.PI * 2);
+    fishCtx.fillStyle = i % 2 === 0 ? '#4CAF50' : '#66BB6A';
+    fishCtx.fill();
+  }
+  fishCtx.restore();
+
+  requestAnimationFrame(fishLoop);
+}
+fishLoop();
+
+let rngHistory = [];
+function generateNumber() {
+  const min = parseInt(document.getElementById('rng-min').value) || 1;
+  const max = parseInt(document.getElementById('rng-max').value) || 100;
+  if (min >= max) { alert('Min must be less than Max!'); return; }
+  const num = Math.floor(Math.random() * (max - min + 1)) + min;
+  document.getElementById('rng-result').textContent = num;
+  fishes.forEach(f => { f.excited = 45; });
+  rngHistory.unshift(num);
+  if (rngHistory.length > 8) rngHistory.pop();
+  const hist = document.getElementById('rng-history');
+  hist.innerHTML = rngHistory.map(n => `<span class="rng-badge">${n}</span>`).join('');
+}
+
+// ============================================================
+//  CLOCK
+// ============================================================
+const clockCanvas = document.getElementById('clockCanvas');
+const cCtx = clockCanvas.getContext('2d');
+
+function drawClock() {
+  const now = new Date();
+  const cx = 90, cy = 90, r = 82;
+  cCtx.clearRect(0, 0, 180, 180);
+
+  // face
+  const grad = cCtx.createRadialGradient(cx - 20, cy - 20, 10, cx, cy, r);
+  grad.addColorStop(0, 'rgba(255,255,255,0.45)');
+  grad.addColorStop(1, 'rgba(100,200,255,0.25)');
+  cCtx.beginPath(); cCtx.arc(cx, cy, r, 0, Math.PI*2);
+  cCtx.fillStyle = grad; cCtx.fill();
+  cCtx.strokeStyle = 'rgba(255,255,255,0.55)'; cCtx.lineWidth = 2; cCtx.stroke();
+
+  // tick marks
+  for (let i = 0; i < 60; i++) {
+    const angle = (i / 60) * Math.PI * 2 - Math.PI / 2;
+    const isMaj = i % 5 === 0;
+    const r1 = isMaj ? r - 12 : r - 7;
+    cCtx.beginPath();
+    cCtx.moveTo(cx + Math.cos(angle) * r1, cy + Math.sin(angle) * r1);
+    cCtx.lineTo(cx + Math.cos(angle) * (r - 3), cy + Math.sin(angle) * (r - 3));
+    cCtx.strokeStyle = isMaj ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.4)';
+    cCtx.lineWidth = isMaj ? 2 : 1;
+    cCtx.stroke();
+  }
+
+  const h = now.getHours() % 12;
+  const m = now.getMinutes();
+  const s = now.getSeconds();
+  const ms = now.getMilliseconds();
+
+  function hand(angle, len, width, color) {
+    cCtx.save();
+    cCtx.translate(cx, cy);
+    cCtx.rotate(angle - Math.PI / 2);
+    cCtx.beginPath();
+    cCtx.moveTo(0, 10);
+    cCtx.lineTo(0, -len);
+    cCtx.strokeStyle = color;
+    cCtx.lineWidth = width;
+    cCtx.lineCap = 'round';
+    cCtx.stroke();
+    cCtx.restore();
+  }
+
+  const smoothS = s + ms / 1000;
+  hand((h + m/60) / 12 * Math.PI * 2, 46, 4, 'rgba(255,255,255,0.9)');
+  hand((m + s/60) / 60 * Math.PI * 2, 60, 3, 'rgba(255,255,255,0.85)');
+  hand(smoothS / 60 * Math.PI * 2, 68, 1.5, 'rgba(100,240,255,0.95)');
+
+  cCtx.beginPath(); cCtx.arc(cx, cy, 5, 0, Math.PI*2);
+  cCtx.fillStyle = 'rgba(100,240,255,0.9)'; cCtx.fill();
+
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('clock-digital').textContent =
+    `${String(now.getHours()).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  document.getElementById('clock-date').textContent =
+    `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+}
+setInterval(drawClock, 100);
+drawClock();
+
+// ============================================================
+//  SCREENSAVER
+// ============================================================
+const ss = document.getElementById('ssCanvas');
+const ssCtx = ss.getContext('2d');
+ss.width = ss.offsetWidth || 668;
+let ssMode = 'bubbles', ssRunning = false, ssFrame = null;
+
+let ssBubbles = Array.from({length: 30}, () => ({
+  x: Math.random() * 668, y: Math.random() * 320,
+  r: 6 + Math.random() * 28, vx: (Math.random()-0.5)*0.6, vy: -(0.3 + Math.random()*0.7),
+  hue: 180 + Math.random()*80, alpha: 0.2 + Math.random()*0.35
+}));
+
+let ssOrbs = Array.from({length: 8}, () => ({
+  x: Math.random()*668, y: Math.random()*320,
+  vx: (Math.random()-0.5)*1.5, vy: (Math.random()-0.5)*1.5,
+  r: 20 + Math.random()*50, hue: 180+Math.random()*120, alpha: 0.25
+}));
+
+let ssStars = Array.from({length: 60}, () => ({
+  x: Math.random()*668, y: Math.random()*320,
+  r: 1 + Math.random()*3, twinkle: Math.random()*Math.PI*2, speed: 0.02+Math.random()*0.06
+}));
+
+let ssWaveT = 0;
+
+function saverTick() {
+  const W = ss.width, H = 320;
+  ssCtx.clearRect(0, 0, W, H);
+
+  const bgG = ssCtx.createLinearGradient(0, 0, 0, H);
+  bgG.addColorStop(0, '#061a30'); bgG.addColorStop(1, '#0a3050');
+  ssCtx.fillStyle = bgG; ssCtx.fillRect(0, 0, W, H);
+
+  if (ssMode === 'bubbles') {
+    ssBubbles.forEach(b => {
+      b.x += b.vx + Math.sin(Date.now()/2000 + b.y*0.01)*0.3;
+      b.y += b.vy;
+      if (b.y < -b.r*2) { b.y = H + b.r; b.x = Math.random()*W; }
+      const g = ssCtx.createRadialGradient(b.x - b.r*0.3, b.y - b.r*0.3, b.r*0.05, b.x, b.y, b.r);
+      g.addColorStop(0, `hsla(${b.hue},80%,90%,${b.alpha*0.6})`);
+      g.addColorStop(0.6, `hsla(${b.hue},70%,70%,${b.alpha})`);
+      g.addColorStop(1, `hsla(${b.hue},60%,50%,${b.alpha*0.3})`);
+      ssCtx.beginPath(); ssCtx.arc(b.x, b.y, b.r, 0, Math.PI*2);
+      ssCtx.fillStyle = g; ssCtx.fill();
+      ssCtx.beginPath(); ssCtx.arc(b.x-b.r*0.3, b.y-b.r*0.3, b.r*0.25, 0, Math.PI*2);
+      ssCtx.fillStyle = `rgba(255,255,255,${b.alpha*0.5})`; ssCtx.fill();
+    });
+  } else if (ssMode === 'waves') {
+    ssWaveT += 0.02;
+    for (let w = 0; w < 6; w++) {
+      ssCtx.beginPath();
+      ssCtx.moveTo(0, H*0.3 + w*30);
+      for (let x = 0; x <= W; x += 4) {
+        const y = H*0.3 + w*30 + Math.sin(x*0.012 + ssWaveT + w*0.8)*22 + Math.sin(x*0.02 + ssWaveT*1.3)*12;
+        ssCtx.lineTo(x, y);
+      }
+      ssCtx.strokeStyle = `hsla(${190+w*15},80%,${60+w*5}%,${0.15+w*0.07})`;
+      ssCtx.lineWidth = 2 + w*0.5;
+      ssCtx.stroke();
+    }
+  } else if (ssMode === 'stars') {
+    ssStars.forEach(s => {
+      s.twinkle += s.speed;
+      const a = 0.4 + Math.sin(s.twinkle)*0.5;
+      ssCtx.beginPath(); ssCtx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ssCtx.fillStyle = `rgba(200,240,255,${a})`; ssCtx.fill();
+      if (a > 0.8) {
+        ssCtx.beginPath(); ssCtx.arc(s.x, s.y, s.r*2.5, 0, Math.PI*2);
+        ssCtx.fillStyle = `rgba(180,230,255,${(a-0.8)*0.3})`; ssCtx.fill();
+      }
+    });
+  } else if (ssMode === 'orbs') {
+    ssOrbs.forEach(o => {
+      o.x += o.vx; o.y += o.vy;
+      if (o.x < -o.r || o.x > W+o.r) o.vx *= -1;
+      if (o.y < -o.r || o.y > H+o.r) o.vy *= -1;
+      const g = ssCtx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
+      g.addColorStop(0, `hsla(${o.hue},80%,85%,0.6)`);
+      g.addColorStop(0.5, `hsla(${o.hue},70%,60%,${o.alpha})`);
+      g.addColorStop(1, `hsla(${o.hue},60%,40%,0)`);
+      ssCtx.beginPath(); ssCtx.arc(o.x, o.y, o.r, 0, Math.PI*2);
+      ssCtx.fillStyle = g; ssCtx.fill();
+    });
+  }
+
+  if (ssRunning) ssFrame = requestAnimationFrame(saverTick);
+}
+
+function startSaver() {
+  if (!ssRunning) { ssRunning = true; saverTick(); }
+}
+
+function toggleSaver() {
+  const btn = document.querySelector('.ss-controls .aero-btn');
+  if (ssRunning) { ssRunning = false; cancelAnimationFrame(ssFrame); btn.textContent = '▶ Play'; }
+  else { ssRunning = true; saverTick(); btn.textContent = '⏸ Pause'; }
+}
+
+function setSaverMode() { ssMode = document.getElementById('ss-mode').value; }
+
+// ============================================================
+//  TONE / SYNTH PLAYER
+// ============================================================
+let audioCtx = null;
+let vizBars = 24;
+let vizBarEls = [];
+let vizInterval = null;
+let isLooping = false;
+
+const tracks = [
+  { name: 'Ocean Drift', artist: 'Aero Synth', freq: 220, type: 'sine', duration: 8, modFreq: 3 },
+  { name: 'Crystal Tide', artist: 'Aero Synth', freq: 330, type: 'triangle', duration: 6, modFreq: 5 },
+  { name: 'Deep Groove', artist: 'Aero Synth', freq: 110, type: 'sawtooth', duration: 10, modFreq: 2 },
+  { name: 'Aqua Breeze', artist: 'Aero Synth', freq: 440, type: 'sine', duration: 7, modFreq: 4 },
+  { name: 'Neon Coral', artist: 'Aero Synth', freq: 262, type: 'triangle', duration: 9, modFreq: 6 },
+];
+
+let currentTrack = -1;
+let isPlaying = false;
+let playStart = 0;
+let playElapsed = 0;
+let audioNodes = [];
+let progressInterval = null;
+
+function getOrCreateAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function buildViz() {
+  const viz = document.getElementById('mp3-viz');
+  viz.innerHTML = '';
+  vizBarEls = [];
+  for (let i = 0; i < vizBars; i++) {
+    const b = document.createElement('div');
+    b.className = 'mp3-bar';
+    b.style.height = '4px';
+    viz.appendChild(b);
+    vizBarEls.push(b);
+  }
+}
+
+function animateViz(playing) {
+  if (vizInterval) clearInterval(vizInterval);
+  if (!playing) { vizBarEls.forEach(b => b.style.height = '4px'); return; }
+  vizInterval = setInterval(() => {
+    vizBarEls.forEach((b, i) => {
+      const h = playing ? 6 + Math.abs(Math.sin(Date.now()/200 + i*0.5)) * 34 : 4;
+      b.style.height = h.toFixed(0) + 'px';
+    });
+  }, 60);
+}
+
+function stopCurrentAudio() {
+  audioNodes.forEach(n => { try { n.stop(); } catch(e){} });
+  audioNodes = [];
+  if (progressInterval) clearInterval(progressInterval);
+  playElapsed = 0;
+  document.getElementById('mp3-progress').style.width = '0%';
+  document.getElementById('mp3-curr').textContent = '0:00';
+  animateViz(false);
+  document.getElementById('mp3-play-btn').textContent = '▶';
+  isPlaying = false;
+}
+
+function playTrack(idx) {
+  stopCurrentAudio();
+  currentTrack = idx;
+  const track = tracks[idx];
+  document.getElementById('mp3-name').textContent = track.name;
+  document.getElementById('mp3-artist').textContent = track.artist;
+  const dur = track.duration;
+  document.getElementById('mp3-dur').textContent = `0:${String(dur).padStart(2,'0')}`;
+
+  document.querySelectorAll('.mp3-track').forEach((el, i) => {
+    el.classList.toggle('playing', i === idx);
+  });
+
+  const ctx = getOrCreateAudio();
+  const osc = ctx.createOscillator();
+  const gainNode = ctx.createGain();
+  const modOsc = ctx.createOscillator();
+  const modGain = ctx.createGain();
+
+  modOsc.frequency.value = track.modFreq;
+  modGain.gain.value = 30;
+  modOsc.connect(modGain);
+  modGain.connect(osc.frequency);
+
+  osc.type = track.type;
+  osc.frequency.value = track.freq;
+  gainNode.gain.setValueAtTime(0, ctx.currentTime);
+  gainNode.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.3);
+  gainNode.gain.linearRampToValueAtTime(0.08, ctx.currentTime + dur - 0.5);
+  gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + dur);
+
+  osc.connect(gainNode);
+  gainNode.connect(ctx.destination);
+  modOsc.start();
+  osc.start();
+  osc.stop(ctx.currentTime + dur);
+  osc.onended = () => {
+    if (isLooping) playTrack(currentTrack);
+    else nextTrack();
+  };
+
+  audioNodes = [osc, modOsc];
+  isPlaying = true;
+  playStart = ctx.currentTime;
+  document.getElementById('mp3-play-btn').textContent = '⏸';
+  animateViz(true);
+
+  progressInterval = setInterval(() => {
+    if (!isPlaying) return;
+    const elapsed = ctx.currentTime - playStart;
+    const pct = Math.min((elapsed / dur) * 100, 100);
+    document.getElementById('mp3-progress').style.width = pct.toFixed(1) + '%';
+    const secs = Math.floor(elapsed);
+    document.getElementById('mp3-curr').textContent = `0:${String(Math.min(secs, dur)).padStart(2,'0')}`;
+  }, 200);
+}
+
+function togglePlay() {
+  if (currentTrack === -1) { playTrack(0); return; }
+  if (isPlaying) {
+    stopCurrentAudio();
+  } else {
+    playTrack(currentTrack);
+  }
+}
+
+function nextTrack() {
+  const next = (currentTrack + 1) % tracks.length;
+  playTrack(next);
+}
+
+function prevTrack() {
+  const prev = (currentTrack - 1 + tracks.length) % tracks.length;
+  playTrack(prev);
+}
+
+function toggleLoop() {
+  isLooping = !isLooping;
+  document.getElementById('loop-btn').style.opacity = isLooping ? '1' : '0.5';
+}
+
+function seekTone(e) {
+  if (currentTrack === -1) return;
+  const rect = e.currentTarget.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  playTrack(currentTrack);
+}
+
+function buildPlaylist() {
+  const pl = document.getElementById('mp3-playlist');
+  pl.innerHTML = tracks.map((t, i) => `
+    <div class="mp3-track" onclick="playTrack(${i})">
+      <span class="mp3-track-num">${i+1}</span>
+      <span style="flex:1">${t.name}</span>
+      <span style="font-size:11px;color:rgba(255,255,255,0.5)">0:${String(t.duration).padStart(2,'0')}</span>
+    </div>
+  `).join('');
+}
+buildViz();
+buildPlaylist();
+
+// ============================================================
+//  DICE
+// ============================================================
+let diceTypes = [4, 6];
+let diceSides = 6;
+
+const dieFaces = {
+  1:'⚀',2:'⚁',3:'⚂',4:'⚃',5:'⚄',6:'⚅'
+};
+
+function selectDiceType(sides, btn) {
+  diceSides = sides;
+  document.querySelectorAll('.dice-type-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function rollAllDice() {
+  const diceArea = document.getElementById('dice-area');
+  const dice = diceArea.querySelectorAll('.die');
+  let total = 0;
+  dice.forEach(d => {
+    d.classList.remove('rolling');
+    void d.offsetWidth;
+    d.classList.add('rolling');
+    const val = Math.floor(Math.random() * diceSides) + 1;
+    total += val;
+    d.textContent = val <= 6 ? (dieFaces[val] || val) : val;
+    setTimeout(() => d.classList.remove('rolling'), 600);
+  });
+  const count = dice.length;
+  document.getElementById('dice-result').textContent =
+    `Total: ${total}  (${count} × D${diceSides})`;
+}
+
+// add/remove dice
+function addDie() {
+  const area = document.getElementById('dice-area');
+  const d = document.createElement('div');
+  d.className = 'die';
+  d.textContent = '⚄';
+  d.onclick = rollAllDice;
+  area.appendChild(d);
+}
+
+// ============================================================
+//  COIN FLIP
+// ============================================================
+let headsCount = 0, tailsCount = 0;
+let coinFlipping = false;
+
+function flipCoin() {
+  if (coinFlipping) return;
+  coinFlipping = true;
+  const coin = document.getElementById('coin');
+  const result = document.getElementById('coin-result');
+  coin.classList.remove('flipping');
+  void coin.offsetWidth;
+  coin.classList.add('flipping');
+  result.textContent = '...';
+
+  setTimeout(() => {
+    const isHeads = Math.random() < 0.5;
+    coin.className = 'coin ' + (isHeads ? 'heads' : 'tails');
+    coin.textContent = isHeads ? '🌞' : '🌙';
+    result.textContent = isHeads ? '✨ Heads!' : '🌙 Tails!';
+    if (isHeads) headsCount++; else tailsCount++;
+    document.getElementById('coin-heads').textContent = headsCount;
+    document.getElementById('coin-tails').textContent = tailsCount;
+    coinFlipping = false;
+  }, 650);
+}
+</script>
+</body>
+</html>
